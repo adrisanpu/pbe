@@ -1,4 +1,5 @@
-from pirc522 import RFID
+from lib.pirc522 import RFID
+import RPi.GPIO as GPIO
 
 class Rfid:
     
@@ -11,6 +12,7 @@ class Rfid:
         return uidhex
                                
     if __name__ == "__main__":
+        GPIO.setwarnings(False)
         print("READING...")
         rf = RFID()
         uid = read_uid(rf)       
