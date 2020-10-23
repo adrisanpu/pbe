@@ -5,11 +5,15 @@ class Rfid:
     
     def read_uid(self):        
         self.wait_for_tag()
-        (error, data) = self.request()
-        if not error:
-            (error, card_uid) = self.anticoll()
-            uidhex = str(hex(card_uid[0]))+","+str(hex(card_uid[1]))+","+str(hex(card_uid[2]))+","+str(hex(card_uid[3]))                
-        return uidhex
+        (error1, data) = self.request()
+        error2 = True
+        while error2:
+            if not error1:
+                (error2, card_uid) = self.anticoll()
+                if (card_uid != "\0"):
+                    uidhex = str(hex(card_uid[0]))+","+str(hex(card_uid[1]))+","+str(hex(card_uid[2]))+","+str(hex(card_uid[3]))
+                    card_uid = "\0"
+                    return uidhex
                                
     if __name__ == "__main__":
         GPIO.setwarnings(False)
