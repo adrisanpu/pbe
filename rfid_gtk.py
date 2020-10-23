@@ -19,9 +19,9 @@ class myWindow(Gtk.Window):
         vbox.set_homogeneous(False)
         
         #creacio etiqueta
-        label = Gtk.Label(label="Please, login with your university card.")
-        label.set_name("label")
-        vbox.pack_start(label, True, True, 0)
+        self.label = Gtk.Label(label="Please, login with your university card.")
+        self.label.set_name("label")
+        vbox.pack_start(self.label, True, True, 0)
         
         #creacio boto
         button = Gtk.Button(label="Clear")
@@ -29,7 +29,7 @@ class myWindow(Gtk.Window):
         vbox.pack_start(button, True, True, 0)
         
         #estils que s'utilitzaran al programa (css)
-        blue = b"""
+        self.blue = b"""
                 
                 button{
                     background-color: #E0D4D4;
@@ -43,7 +43,7 @@ class myWindow(Gtk.Window):
                 }
                 
             """
-        red = b"""
+        self.red = b"""
                 
                 button{
                     background-color: #E0D4D4;
@@ -58,11 +58,11 @@ class myWindow(Gtk.Window):
             """
         
         #carreguem els estils que acabem de crear en el nostre programa
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_data(blue)
+        self.css_provider = Gtk.CssProvider()
+        self.css_provider.load_from_data(self.blue)
         context = Gtk.StyleContext()
         screen = Gdk.Screen.get_default()
-        context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        context.add_provider_for_screen(screen, self.css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         
         #afegim la caixa a la finestra 
         self.add(vbox)
@@ -75,9 +75,10 @@ class myWindow(Gtk.Window):
         
     #funcio que s'executa cada cop que es pitja el boto i reinicia la finestra
     def on_button_clicked(self, widget):
+        GPIO.cleanup()
         if (self.thread_in_use == False):
-            label.set_text("Please, login with your university card")
-            css_provider.load_from_data(blue)
+            self.label.set_text("Please, login with your university card")
+            self.css_provider.load_from_data(self.blue)
             thread = threading.Thread(target=self.uid_func)
             thread.start()
             self.thread_in_use = True
@@ -85,9 +86,9 @@ class myWindow(Gtk.Window):
     #funcio que realitza el lector    
     def uid_func(self):
         rf = RFID()
-        uid = read_uid(rf)
-        label.set_text("UID:"+uid)
-        css_provider.load_from_data(red)
+        uid = Rfid.read_uid(rf)
+        self.label.set_text("UID:"+uid)
+        self.css_provider.load_from_data(self.red)
         self.thread_in_use = False
 
 if __name__ == "__main__":
