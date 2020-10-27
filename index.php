@@ -9,10 +9,11 @@
 	//metodes de configuracio i comprovacio de la conexio amb la db
 	if(mysqli_connect_errno()){
 		echo "Error al connectar el servidor amb la base de dades.";
+		exit();
 	}
-	mysqli_select_db($connection, $dbName) or die ("No s'ha pogut trobar la base de dades.")
+	mysqli_select_db($connection, $dbName) or die ("No s'ha pogut trobar la base de dades.");
 	//no se perque aquesta funcio em dona error
-	//mysqli_set_charset($connection, "utf8"); 
+	mysqli_set_charset($connection, "utf8"); 
 	//metode get asigna a les variables el valor que indica el url (que ve de python)
 	$name = $_GET["name"];
 	$query = $_GET["query"];
