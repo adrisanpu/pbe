@@ -18,6 +18,7 @@
 	$name = $_GET["name"];
 	$query = $_GET["query"];
 	//creem la comanda en sql per transmetre a la db
+	//aquesta comanda pot variar, depen de com construim les taules de la db
 	$consult = "SELECT ". $query. " FROM". $name;
 	$result = mysqli_query($connection, $consult);
 	//imprimir al servidor web les dades en files separades per salt de linia i columnes per coma
@@ -28,5 +29,7 @@
 		}
 		echo "<br>";
 	}
+	//tanquem la conexio amb la db
+	mysqli_close($connection);
 	//posteriorment python llegeix els valors que apareixen al servidor web
 ?>
