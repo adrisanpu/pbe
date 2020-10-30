@@ -1,7 +1,7 @@
 <?php
 	//dades de la db
 	$dbHost = "localHost";
-	$dbName = ""; //posar nom de la db creada a mysql
+	$dbName = "pbe";
 	$dbUsr = "root";
 	$dbPassword = "";
 	//connexio amb la db
@@ -15,17 +15,29 @@
 	//no se perque aquesta funcio em dona error
 	mysqli_set_charset($connection, "utf8"); 
 	//metode get asigna a les variables el valor que indica el url (que ve de python)
-	$name = $_GET["name"];
-	$query = $_GET["query"];
+	//$query = $_GET["query"];
+	//$name = $_GET["name"];
+	$query = "timetables";
+	$name = "xxx";
 	//creem la comanda en sql per transmetre a la db
 	//aquesta comanda pot variar, depen de com construim les taules de la db
-	$consult = "SELECT ". $query. " FROM". $name;
-	$result = mysqli_query($connection, $consult);
+	$consult_data = "select * from ". $query. " where uid = ". '"'. $name. '"';
+	$result = mysqli_query($connection, $consult_data);
+	//definir el num de camps de cada taula
+	switch($query){
+		case "timetables":
+			$i_max = 4;
+			break;
+		case "tasks" || "marks":
+			$i_max = 3;
+			break;	
+	}
 	//imprimir al servidor web les dades en files separades per salt de linia i columnes per coma
 	while($row = mysqli_fetch_row($result)){
-		$i = 0;
-		while($row[i]){
-			echo $row[i]. ",";
+		$i = 1;
+		while($i <= $i_max){
+			echo $row[$i]. ",";
+			$i ++;
 		}
 		echo "<br>";
 	}
