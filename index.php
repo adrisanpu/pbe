@@ -1,4 +1,9 @@
 <?php
+//************COMENTARIS***********
+// - S'ha d'aclarar com funciona l'ordre de timetables i tasks.
+// - S'ha d'implementar el tema de les constraints per URL que hi ha a l'enunciat?
+//************COMENTARIS***********
+
 	//dades de la db
 	$dbHost = "localHost";
 	$dbName = "pbe";
@@ -17,29 +22,38 @@
 	//metode get asigna a les variables el valor que indica el url (que ve de python)
 	//$query = $_GET["query"];
 	//$name = $_GET["name"];
+	//variables d'exemple
 	$query = "timetables";
 	$name = "xxx";
-	//creem la comanda en sql per transmetre a la db
-	//aquesta comanda pot variar, depen de com construim les taules de la db
-	$consult_data = "select * from ". $query. " where uid = ". '"'. $name. '"';
-	$result = mysqli_query($connection, $consult_data);
-	//definir el num de camps de cada taula
+	//per a cada query diferent es fa una busqueda a la db amb la sentencia sql pertinent que a mes ordena els registres de la manera que s'especifica a l'enunciat
 	switch($query){
 		case "timetables":
 			$i_max = 4;
+			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"';
+			showInServer($connection, $consultData, $i_max);
 			break;
-		case "tasks" || "marks":
+		case "tasks":
 			$i_max = 3;
-			break;	
+			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"';
+			showInServer($connection, $consultData, $i_max);
+			break;
+		case "marks":
+			$i_max = 3;
+			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"'. "order by subjects";
+			showInServer($connection, $consultData, $i_max);
+			break;		
 	}
-	//imprimir al servidor web les dades en files separades per salt de linia i columnes per coma
-	while($row = mysqli_fetch_row($result)){
+	//funcio que es crida quan es vol mostrar al servidor el resultat final de la busqueda 
+	function showInServer($connectDB, $consultDB, $fields){
+		$result = mysqli_query($connectDB, $consultDB);
+		while($row = mysqli_fetch_row($result)){
 		$i = 1;
-		while($i <= $i_max){
-			echo $row[$i]. ",";
-			$i ++;
-		}
+			while($i <= $fields){
+				echo $row[$i]. ",";
+				$i ++;
+			}
 		echo "<br>";
+		}
 	}
 	//tanquem la conexio amb la db
 	mysqli_close($connection);
