@@ -1,7 +1,10 @@
 <?php
 //************COMENTARIS***********
-// - S'ha d'aclarar com funciona l'ordre de timetables i tasks.
+// - S'ha d'aclarar com funciona l'ordre de timetables.
 // - S'ha d'implementar el tema de les constraints per URL que hi ha a l'enunciat?
+// - El numero d'iteracions de cada taula (camps) esta una mica chapuza pero no he trobat altra opcio:
+//		- count(*) pero retorna un objecte de tipus mysqli_result q no puc castejar a int per operar.
+//		- si ho faig am un i++ per iteracio surt un warning al server que molesta.
 //************COMENTARIS***********
 
 	//dades de la db
@@ -23,8 +26,8 @@
 	//$query = $_GET["query"];
 	//$name = $_GET["name"];
 	//variables d'exemple
-	$query = "timetables";
-	$name = "xxx";
+	$query = "tasks";
+	$name = "0xa9,0x47,0x56,0xc1";
 	//per a cada query diferent es fa una busqueda a la db amb la sentencia sql pertinent que a mes ordena els registres de la manera que s'especifica a l'enunciat
 	switch($query){
 		case "timetables":
@@ -34,12 +37,12 @@
 			break;
 		case "tasks":
 			$i_max = 3;
-			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"';
+			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"'. " order by date";
 			showInServer($connection, $consultData, $i_max);
 			break;
 		case "marks":
 			$i_max = 3;
-			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"'. "order by subjects";
+			$consultData = "select * from ". $query. " where uid = ". '"'. $name. '"'. " order by subject";
 			showInServer($connection, $consultData, $i_max);
 			break;		
 	}
