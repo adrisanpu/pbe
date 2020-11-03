@@ -11,9 +11,10 @@ class Rfid:
             if not error1:
                 (error2, card_uid) = self.anticoll()
                 if (card_uid != "\0"):
-                    uidhex = str(hex(card_uid[0]))+","+str(hex(card_uid[1]))+","+str(hex(card_uid[2]))+","+str(hex(card_uid[3]))
+                    uidhex = str(hex(card_uid[0]))+str(hex(card_uid[1]))+str(hex(card_uid[2]))+str(hex(card_uid[3]))
+                    uidhex_final = uidhex.replace("0x","").upper()
                     card_uid = "\0"
-                    return uidhex
+                    return uidhex_final
                                
     if __name__ == "__main__":
         GPIO.setwarnings(False)
