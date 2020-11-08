@@ -27,20 +27,21 @@
 		if($len_query > 1) $table = $aux[1];
 		require_once("constVeryfier.php");
 		$contsVeryfier = new constraints_verify($connection, $aux[2], $table);
-		if($len_query > 2) $constr = $contsVeryfier->verify();
+		if($len_query > 2 && $aux[2] != NULL) 
+			$constr = $contsVeryfier->verify();
 	}
 	else{
 		echo "Error en la introducció de la query";
 		exit();
 	}
+	$date = date("w");
+	$days = ["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"];
 
 	//per a cada query diferent es fa una busqueda a la db amb la sentencia sql pertinent que a mes ordena els registres de la manera que s'especifica a l'enunciat
 	switch($table){
 		case "timetables":
 			$i_max = 4;
 			$constr_str = $contsVeryfier->constrCreator($constr, $table);
-		    // ordenar
-			echo $constr_str. "<br>";
 			showInServer($connection, $constr_str, $i_max);
 			break;
 		case "tasks":

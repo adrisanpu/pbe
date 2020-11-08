@@ -34,7 +34,6 @@
 			//vector incialitzat amb els noms de les containts (sense valor) de l'argument
 			$aux = explode('=', $single_constr);
 			$aux2 = explode('[', $aux[0]);
-			echo $aux2[0];
 			if($aux2[0] != "limit"){
 				//sentencia sql on es busca a les columnes de la taula (atribut) si hi ha alguna on es pugui referir la constraint
 				$query = "SHOW COLUMNS FROM ".$this->table." LIKE ".'"'.$aux2[0].'"';
@@ -49,60 +48,69 @@
 
 		//creador de constraints preparades per sentencia sql
 		function constrCreator($constr, $table){
-			$constr_str = "";
-			$limit = "";
-			$isThereLimit = $this->limitDetector($constr);
-			$len = count($constr);
-			for ($i=0; $i < $len; $i++) {
-				//afegir cometes simples als valors de les constraints
-				$aux = explode('=', $constr[$i]);
-				if($aux[0] != "limit"){
-					$aux2 = explode('[', $aux[0]);
-					if(count($aux2) > 1) $extra = $aux2[1];
-					else $extra = "";
-					switch($extra){
-						case "gt]":
-							$aux2[0] = $aux2[0]. " >'";
-							break;
-						case "lt]":
-							$aux2[0] = $aux2[0]. " <'";
-							break;
-						default:
-							$aux2[0] = $aux2[0]."='";
-							break;
-					}
-					$aux[1] = $aux[1]."'";
-					$constr_str = $constr_str. $aux2[0]. $aux[1];
-					//afegir operadors and entre les constraints
-					//CORRETGIR !!!!!!
-					if($isThereLimit && $i == $len-1)
-						$constr_str = $constr_str;
-					elseif($i < $len-1) 
-						$constr_str = $constr_str. " AND ";
-					else
-						$constr_str = $constr_str;
+			if($constr != NULL){
+				$constr_str = "";
+				$limit_constr_str = $this->limitDetector($constr);
+				$limit = $limit_constr_str[0];
+				$constrSinLimit = $limit_constr_str[1];
+				$len = count($constrSinLimit);
+				for ($i=0; $i < $len; $i++) {
+					//afegir cometes simples als valors de les constraints
+					$aux = explode('=', $constrSinLimit[$i]);
+						$aux2 = explode('[', $aux[0]);
+						if(count($aux2) > 1) $extra = $aux2[1];
+						else $extra = "";
+						//afegim comparadors de les constraints si cal
+						switch($extra){
+							case "gt]":
+								$aux2[0] = $aux2[0]. " >'";
+								break;
+							case "lt]":
+								$aux2[0] = $aux2[0]. " <'";
+								break;
+							default:
+								$aux2[0] = $aux2[0]."='";
+								break;
+						}
+						$aux[1] = $aux[1]."'";
+						$constr_str = $constr_str. $aux2[0]. $aux[1];
+						//afegim operadors logics entre les constrains
+						if($i < $len-1)
+							$constr_str = $constr_str. " AND ";
+						else
+							$constr_str = $constr_str;
 				}
-				else{
-					$limit = "limit ". $aux[1];
-				}
+				//afegim el limit si hi ha
+				if($limit != NULL)
+					$limit_str = "limit ". $limit;
+				else 
+					$limit_str = "";
+				//sentencia sql final
+				$constr_str = "select * from ". $table. " where ". $constr_str. $limit_str;
 			}
-			//sentencia sql
-			$constr_str = "select * from ". $table. " where ". $constr_str. $limit;
+			else
+				$constr_str = "select * from ". $table;
 
 			return $constr_str;
 		}
 
-		//buscar si hi ha limit en les constraints
+		//buscar si hi ha limit entre les constraints i si hi ha l'extreu i es guarda el valor
 		function limitDetector($constr){
-			foreach ($constr as $value) {
-				$aux = explode("=", $value);
-				foreach ($aux as $value) {
-					if($value == "limit")
-						return True;
+			$limit_constr_str[0]= "";
+			$len = count($constr);
+			$j = 0;
+			for ($i=0; $i < $len; $i++) { 
+				$aux = explode('=', $constr[$i]);
+				if($aux[0] == "limit"){
+					$limit_constr_str[0] = $aux[1];
+				}
+				else{
+					$constrSinLimit[$j] = $constr[$i];
+					$j++;
 				}
 			}
-			return False;
-			
+			$limit_constr_str[1] = $constrSinLimit;
+			return $limit_constr_str;
 		}
 	}
 ?>
