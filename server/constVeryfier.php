@@ -1,9 +1,6 @@
 <?php
 //************COMENTARIS***********
-// - He canviat el atribut $constr, ara es un string que despres es separa en vector de constraints en 
-//   la funcio verify(), per estalviar linies al main, a mes retorna directament el vector amb 
-//   les constraints.
-//  - tenim el problema dels AND i lilit als if de constrCreator()
+
 //************COMENTARIS***********
 
 	class constraints_verify{
@@ -82,7 +79,7 @@
 				}
 				//afegim el limit si hi ha
 				if($limit != NULL)
-					$limit_str = "limit ". $limit;
+					$limit_str = " limit ". $limit;
 				else 
 					$limit_str = "";
 				//sentencia sql final
