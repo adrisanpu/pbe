@@ -36,31 +36,42 @@
 	switch($table){
 		case "timetables":
 			$i_max = 4;
-			$constr_str = $contsVeryfier->constrCreator($constr, $table);
-			$out = showInServer($connection, $constr_str, $i_max);
-			$orderedOut = dayParser($out);
-			foreach ($orderedOut as $value) {
-				echo $value. "<br>";
+			$days = dayParser();
+			if($constr == NULL || compDetector($constr)){
+				for ($i=0; $i < count($days); $i++) { 
+					if($i != 0){
+						$constr = NULL;
+						$constr[0] = "day=".$days[$i];
+						$constr_str = $contsVeryfier->constrCreator($constr, $table);
+						printInServer($connection, $constr_str, $i_max);
+					}
+					else{
+						if($constr != NULL)
+							array_push($constr,"day=".$days[$i]);
+						else
+							$constr[0] = "day=".$days[$i];
+						$constr_str = $contsVeryfier->constrCreator($constr, $table);
+						printInServer($connection, $constr_str, $i_max);
+					}
+				}
 			}
+			else{
+				$constr_str = $contsVeryfier->constrCreator($constr, $table);
+				printInServer($connection, $constr_str, $i_max);
+			}				
 			break;
+
 		case "tasks":
 			$i_max = 3;
 			$constr_str = $contsVeryfier->constrCreator($constr, $table);
 			//$constr_str = $constr_str. " order by date";
-			echo $constr_str;
-			$out = showInServer($connection, $constr_str, $i_max);
-			foreach ($out as $value) {
-				echo $value. "<br>";
-			}
+			printInServer($connection, $constr_str, $i_max);
 			break;
 		case "marks":
 			$i_max = 3;
 			$constr_str = $contsVeryfier->constrCreator($constr, $table);
 			$constr_str = $constr_str. " order by subject";
-			$out = showInServer($connection, $constr_str, $i_max);
-			foreach ($out as $value) {
-				echo $value. "<br>";
-			}
+			printInServer($connection, $constr_str, $i_max);
 			break;		
 	}
 
@@ -81,33 +92,35 @@
 		return $out;
 	}
 	//funcio que ordena per dies a partir del dia actual
-	function dayParser($out){
-		$actualDate = 3;//date("w");
+	function dayParser(){
+		$actualDate = date("w");
 		$days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 		$parsedDays = array(count($days));
 		//ordena els dies a partir del dia actual
 		for($i = 0; $i < count($days); $i++){
 			$parsedDays[$i] = $days[($actualDate+$i)%count($days)];
 		}
-		$j = 0;
-		$offset = 0;
-		$found = False;
-		//troba el index del vector total de dies on comença el dia actual
-		while(($j < count($out) and !$found)){
-			$aux = explode(',', $out[$j]);
-			if($aux[0] == $parsedDays[0]){
-				$offset = $j;
-				$found = True;
+		return $parsedDays;
+	}
+
+	function compDetector($constr){
+		foreach ($constr as $value) {
+			$aux = explode("=", $value);
+			foreach ($aux as $value2) {
+				$aux2 = explode("[", $value2);
+				if($aux2[1] != NULL)
+			 		return True;
 			}
-			$j++;
 		}
-		$parsed_out = array(count($out));
-		//genera el vector fianl amb els registres ordenats 
-		for($i = 0; $i < count($out); $i++){
-			$parsed_out[$i] = $out[($offset + $i)%count($out)];	
-			//echo $parsed_out[$i];
-		}	
-		return $parsed_out;
+		return False;
+
+	}
+
+	function printInServer($connection, $constr_str, $i_max){
+		$out = showInServer($connection, $constr_str, $i_max);
+			foreach ($out as $value) {
+				echo $value. "<br>";
+			}
 	}
 	//tanquem la conexio amb la db
 	mysqli_close($connection);
