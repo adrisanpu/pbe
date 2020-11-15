@@ -4,11 +4,11 @@
 // - el uid s'ha de passar desde python al url http://localhost/pbe/get.php?timetables?uid=34737834&day=Fri&ho... 
 // - limit ha d'anar despres de order by
 // A SOLUCIONAR:
-// - ordena be els dies pero els que van abans de la data actual haurien de sortir al final
 // - les funcions showinserver i printinserver es poden fer en una sola?
 // - les funcions del final del fitxer es poden serpar a un nou fitxer
 // - nombrar els fitxers amb noms coherents al seu contingut
 // - revisar la nomenclatura de les variables
+// - les funcions dayDetector, compDetector i compDayDetector, es podrien simplificar en una sola?
 //************COMENTARIS***********
 
 	//dades de la db
@@ -60,7 +60,7 @@
 			printInServer($connection, $constr_str, $i_max);
 			break;		
 	}
-	
+
 	//tanquem la conexio amb la db
 	mysqli_close($connection);
 
@@ -82,11 +82,14 @@
 	}
 
 	//funcio que retorna un vector de dies ordenats a partir de l'actual.
-	function dayParser(){
-		$actualDate = date("w");
+	function dayParser($constrDay){
+		if($constrDay == 10)
+			$actualDate = date("w");
+		else
+			$actualDate = $constrDay;
 		$days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 		$parsedDays = array(count($days));
-		//ordena els dies a partir del dia actual
+		//ordena els dies a partir de $actualDate
 		for($i = 0; $i < count($days); $i++){
 			$parsedDays[$i] = $days[($actualDate+$i)%count($days)];
 		}
@@ -95,15 +98,64 @@
 
 	//funcio que detecta si en un vector hi ha algun caracter comparador caracteristic de certes cosntraints
 	function compDetector($constr){
-		foreach ($constr as $value) {
-			$aux = explode("=", $value);
-			foreach ($aux as $value2) {
-				$aux2 = explode("[", $value2);
-				if($aux2[1] != NULL)
-			 		return True;
+		if($constr != NULL){
+			foreach ($constr as $value) {
+				$aux = explode("=", $value);
+				foreach ($aux as $value2) {
+					$aux2 = explode("[", $value2);
+					if(count($aux2) > 1)
+						if($aux2[1] != NULL)
+				 			return True;
+				}
 			}
 		}
 		return False;
+	}
+
+	//funcio que retorna el numero corresponent al dia que hi ha a la constraint day si existeix
+	function dayDetector($constr){
+		$constrDay = 10; //valor que no correspon a cap dia, per tant no hi ha constraint day
+		if($constr != NULL){
+			foreach ($constr as $value) {
+				$aux = explode("=", $value);
+				if($aux[0] == "day")
+					return True;
+			}
+		}
+		return False;
+	}
+
+	//funcio que retorna el numero del dia a partir del que treballar si hi ha a les constraints
+	function compDayDetector($constr){
+		$constrDay = 10;
+		if($constr != NULL){
+			foreach ($constr as $value) {
+				$aux = explode("=", $value);
+				foreach ($aux as $value2){
+					$aux2 = explode("[", $value2);
+					if((count($aux2) > 1) && ($aux2[0] == "day")){
+						switch($aux[1]){
+							case "Mon":
+								$constrDay = 1;
+								break;
+							case "Tue":
+								$constrDay = 2;
+								break;
+							case "Wed":
+								$constrDay = 3;
+								break;
+							case "Thu":
+								$constrDay = 4;
+								break;
+							case "Fri":
+								$constrDay = 5;
+								break;
+						}	
+					}
+				}
+			}
+		}
+		return $constrDay;
 	}
 
 	//funcio que mostra al server
@@ -116,9 +168,10 @@
 
 	//funcio que realitza les querys per ordre de dia a partir de l'actual i aplica certes constraints
 	function orderAndPrintTimetable($connection, $i_max, $constr, $table, $contsVeryfier){
-		$days = dayParser();
-			if($constr == NULL || compDetector($constr)){
-				for ($i=0; $i < count($days); $i++) { 
+		$constrDay = compDayDetector($constr);
+		$days = dayParser($constrDay);
+			if(($constr == NULL || compDetector($constr)) && (!dayDetector($constr) && compDetector($constr))){
+				for ($i=0; $i < count($days); $i++) {
 					if($i != 0){
 						$constr = NULL;
 						$constr[0] = "day=".$days[$i];
