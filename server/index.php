@@ -175,10 +175,10 @@
 			foreach ($constr as $value) {
 				$aux = explode("=", $value);
 				if($aux[0] != "uid")
-		 			$CosnrUid = $aux[1]; 
+		 			$CosntrUid = $aux[1]; 
 			}
 		}
-		return False;
+		return $constrUid;
 	}
 
 	//funcio que realitza les querys per ordre de dia a partir de l'actual i aplica certes constraints

@@ -50,32 +50,40 @@
 				$limit_constr_str = $this->limitDetector($constr);
 				$limit = $limit_constr_str[0];
 				$constrSinLimit = $limit_constr_str[1];
-				$len = count($constrSinLimit);
-				for ($i=0; $i < $len; $i++) {
-					//afegir cometes simples als valors de les constraints
-					$aux = explode('=', $constrSinLimit[$i]);
-						$aux2 = explode('[', $aux[0]);
-						if(count($aux2) > 1) $extra = $aux2[1];
-						else $extra = "";
-						//afegim comparadors de les constraints si cal
-						switch($extra){
-							case "gt]":
-								$aux2[0] = $aux2[0]. " >'";
-								break;
-							case "lt]":
-								$aux2[0] = $aux2[0]. " <'";
-								break;
-							default:
-								$aux2[0] = $aux2[0]."='";
-								break;
-						}
-						$aux[1] = $aux[1]."'";
-						$constr_str = $constr_str. $aux2[0]. $aux[1];
-						//afegim operadors logics entre les constrains
-						if($i < $len-1)
-							$constr_str = $constr_str. " AND ";
-						else
-							$constr_str = $constr_str;
+				if($constrSinLimit != NULL){
+					$len = count($constrSinLimit);
+					for ($i=0; $i < $len; $i++) {
+						//afegir cometes simples als valors de les constraints
+						$aux = explode('=', $constrSinLimit[$i]);
+							$aux2 = explode('[', $aux[0]);
+							if(count($aux2) > 1) $extra = $aux2[1];
+							else $extra = "";
+							//afegim comparadors de les constraints si cal
+							switch($extra){
+								case "gt]":
+									$aux2[0] = $aux2[0]. " >'";
+									break;
+								case "gte]":
+									$aux2[0] = $aux2[0]. " >='";
+									break;
+								case "lt]":
+									$aux2[0] = $aux2[0]. " <'";
+									break;
+								case "lte]":
+									$aux2[0] = $aux2[0]. " <='";
+									break;
+								default:
+									$aux2[0] = $aux2[0]."='";
+									break;
+							}
+							$aux[1] = $aux[1]."'";
+							$constr_str = $constr_str. $aux2[0]. $aux[1];
+							//afegim operadors logics entre les constrains
+							if($i < $len-1)
+								$constr_str = $constr_str. " AND ";
+							else
+								$constr_str = $constr_str;
+					}
 				}
 				//afegim el limit si hi ha
 				if($limit != NULL)
@@ -83,7 +91,10 @@
 				else 
 					$limit_str = "";
 				//sentencia sql final
-				$constr_str = "select * from ". $table. " where ". $constr_str. $limit_str;
+				if($constrSinLimit != NULL)
+					$constr_str = "select * from ". $table. " where ". $constr_str. $limit_str;
+				else 
+					$constr_str = "select * from ". $table. $limit_str;
 			}
 			else
 				$constr_str = "select * from ". $table;
@@ -93,7 +104,8 @@
 
 		//buscar si hi ha limit entre les constraints i si hi ha l'extreu i es guarda el valor
 		function limitDetector($constr){
-			$limit_constr_str[0]= "";
+			$limit_constr_str[0] = "";
+			$constrSinLimit = NULL;
 			$len = count($constr);
 			$j = 0;
 			for ($i=0; $i < $len; $i++) { 
