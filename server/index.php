@@ -4,6 +4,7 @@
 // - el uid s'ha de passar desde python al url http://localhost/pbe/get.php?timetables?uid=34737834&day=Fri&ho... 
 // - limit ha d'anar despres de order by
 // A SOLUCIONAR:
+// - quan ordenem els dies nomes deixem les constr al primer, pero la de uid s'ha de quedar a tots
 // - les funcions showinserver i printinserver es poden fer en una sola?
 // - les funcions del final del fitxer es poden serpar a un nou fitxer
 // - nombrar els fitxers amb noms coherents al seu contingut
@@ -39,12 +40,13 @@
 		echo "Error en la introducció de la query";
 		exit();
 	}
+	$constrUid = searchUid($constr);
 
 	//segons la taula que volguem mirar creem una query diferent a la bd i mostrem el seu resultat al servidor
 	switch($table){
 		case "timetables":
 			$i_max = 4;
-			orderAndPrintTimetable($connection, $i_max, $constr, $table, $contsVeryfier);				
+			orderAndPrintTimetable($connection, $i_max, $constr, $table, $contsVeryfier, $constrUid);				
 			break;
 
 		case "tasks":
@@ -166,16 +168,30 @@
 			}
 	}
 
+	//fucnio que busca i retorna el valor de la constraint uid en un vector de constraints
+	function searchUid($constr){
+		$constrUid= "";
+		if($constr != NULL){
+			foreach ($constr as $value) {
+				$aux = explode("=", $value);
+				if($aux[0] != "uid")
+		 			$CosnrUid = $aux[1]; 
+			}
+		}
+		return False;
+	}
+
 	//funcio que realitza les querys per ordre de dia a partir de l'actual i aplica certes constraints
-	function orderAndPrintTimetable($connection, $i_max, $constr, $table, $contsVeryfier){
+	function orderAndPrintTimetable($connection, $i_max, $constr, $table, $contsVeryfier, $constrUid){
 		$constrDay = compDayDetector($constr);
 		$days = dayParser($constrDay);
 			if(($constr == NULL || compDetector($constr)) && (!dayDetector($constr) && compDetector($constr))){
 				for ($i=0; $i < count($days); $i++) {
 					if($i != 0){
 						$constr = NULL;
-						$constr[0] = "day=".$days[$i];
-						$constr_str = $contsVeryfier->constrCreator($constr, $table);
+						$constr[0] = $constrUid;
+						$constr[1] = "day=".$days[$i];
+						$constr_str0 = $contsVeryfier->constrCreator($constr, $table);
 						printInServer($connection, $constr_str, $i_max);
 					}
 					else{
@@ -186,6 +202,7 @@
 						$constr_str = $contsVeryfier->constrCreator($constr, $table);
 						printInServer($connection, $constr_str, $i_max);
 					}
+					echo $constr_str;
 				}
 			}
 			else{
