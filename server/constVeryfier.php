@@ -1,20 +1,19 @@
 <?php
-//************COMENTARIS***********
-
-//************COMENTARIS***********
 
 	class ConstraintsVerify{
-		//atributs de la classe
+		
 		public $conexion;
 		public $constr;
 		public $table;
+
 		//constructor de l'objecte que s'ha de verificar
 		function __construct($connection, $constr, $table){
 			$this->connection = $connection;
 			$this->constr = $constr;
 			$this->table = $table;
 		}
-		//verifica si totes les constraints de la llista existeixen en la taula
+
+		//funcio que verifica si totes les constraints de la llista existeixen en la taula
 		function verify(){
 			$aux = explode('&', $this->constr);
 			for($i = 0; $i < count($aux); $i++){
@@ -26,24 +25,21 @@
 			}
 			return $aux;
 		}	
-		//verifica una sola constraint
+
+		//funcio que verifica una sola constraint comparant la consatint del url amb els camps de la taula
 		function verifySingleConstr($singleConstr){
-			//vector incialitzat amb els noms de les containts (sense valor) de l'argument
 			$aux = explode('=', $singleConstr);
 			$aux2 = explode('[', $aux[0]);
 			if($aux2[0] != "limit"){
-				//sentencia sql on es busca a les columnes de la taula (atribut) si hi ha alguna on es pugui referir la constraint
 				$query = "SHOW COLUMNS FROM ".$this->table." LIKE ".'"'.$aux2[0].'"';
-				//resultat obtingut d'enviar la sentencia a la db
 				$results = mysqli_query($this->connection, $query);
-				//Verifiquem si existeix la columna
 				if(!mysqli_fetch_row($results))
 					return False;
 			} 
 			return True;
 		}
 
-		//creador de constraints preparades per sentencia sql
+		//funcio encarregada de crear la query parsejant correcatment les constraints
 		function constrCreator($constr, $table){
 			if($constr != NULL){
 				$constrStr = "";
@@ -53,12 +49,10 @@
 				if($constrSinLimit != NULL){
 					$len = count($constrSinLimit);
 					for ($i=0; $i < $len; $i++) {
-						//afegir cometes simples als valors de les constraints
 						$aux = explode('=', $constrSinLimit[$i]);
 							$aux2 = explode('[', $aux[0]);
 							if(count($aux2) > 1) $extra = $aux2[1];
 							else $extra = "";
-							//afegim comparadors de les constraints si cal
 							switch($extra){
                                 case "gt]":
                                     $aux2[0] = $aux2[0]. " >'";
@@ -78,20 +72,19 @@
                             }
 							$aux[1] = $aux[1]."'";
 							$constrStr = $constrStr. $aux2[0]. $aux[1];
-							//afegim operadors logics entre les constrains
+
 							if($i < $len-1)
 								$constrStr = $constrStr. " AND ";
 							else
 								$constrStr = $constrStr;
 					}
 				}
-				
-				//afegim el limit si hi ha
+
 				if($limit != NULL)
 					$limitStr = " limit ". $limit;
 				else 
 					$limitStr = "";
-				//sentencia sql final
+
 				if($constrSinLimit != NULL)
 					$constrStr = "select * from ". $table. " where ". $constrStr. $limitStr;
 				else 
@@ -103,7 +96,7 @@
 			return $constrStr;
 		}
 
-		//buscar si hi ha limit entre les constraints i si hi ha l'extreu i es guarda el valor
+		//funcio que busca si hi ha limit entre les constraints i si hi ha l'extreu i es guarda el valor
 		function limitDetector($constr){
 			$limitConstrStr[0]= "";
 			$len = count($constr);
