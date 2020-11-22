@@ -40,13 +40,13 @@
 			$iMax = 3;
 			$constrStr = $contsVeryfier->constrCreator($constr, $table);
 			$constrStr = $constrStr. " order by date";
-			$funct->showIt($connection, $constrStr, $iMax, $table, False);
+			$funct->showIt($connection, $constrStr, $iMax, $table, $constrUid);
 			break;
 		case "marks":
 			$iMax = 3;
 			$constrStr = $contsVeryfier->constrCreator($constr, $table);
 			$constrStr = $constrStr. " order by subject";
-			$funct->showIt($connection, $constrStr, $iMax, $table, False);
+			$funct->showIt($connection, $constrStr, $iMax, $table, $constrUid);
 			break;		
 	}
 

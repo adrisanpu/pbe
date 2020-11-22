@@ -22,15 +22,10 @@
 			$tableArray = [];
 			$j = 0;
 			while($row = mysqli_fetch_row($result)){
-				if(!$done){
-					$i = 0;
-					$uid = $row[$i];
-					$done = True;
-				}
-				else
-					$i = 1;
+				$i = 0;
 				$arrayAux = [];
 				while($i <= $fields){
+					if($colsNames[$i] != "uid")
 					$arrayAux[$colsNames[$i]] = $row[$i];
 					$i ++;
 					$j ++;
@@ -54,9 +49,9 @@
 		}
 
 		//funcio que msotra per pantalla el resultat de la query en format json per a les taules marks i tasks
-		function showIt($connectDB, $consultDB, $fields, $table, $done){
+		function showIt($connectDB, $consultDB, $fields, $table, $constrUid){
 			$out = self::showInServer($connectDB, $consultDB, $fields, $table, False);
-			echo json_encode($out);
+			echo json_encode(array("uid"=>$constrUid, $table=>$out));
 		}
 
 		//funcio que retorna un vector de dies ordenats a partir de l'actual.
@@ -170,5 +165,5 @@
 			echo json_encode($jsonArray);
 		}
 	}
-	
+
 ?>
