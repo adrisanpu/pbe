@@ -1,23 +1,20 @@
 <?php
 
 	class ConstraintsVerify{
-		
+		//atributs de la classe
 		public $conexion;
 		public $constr;
 		public $table;
-
 		//constructor de l'objecte que s'ha de verificar
 		function __construct($connection, $constr, $table){
 			$this->connection = $connection;
 			$this->constr = $constr;
 			$this->table = $table;
 		}
-
-		//funcio que verifica si totes les constraints de la llista existeixen en la taula
+		//verifica si totes les constraints de la llista existeixen en la taula
 		function verify(){
 			$aux = explode('&', $this->constr);
 			for($i = 0; $i < count($aux); $i++){
-				//instancia a la funcio de la mateixa clase
 				if(!$this->verifySingleConstr($aux[$i])){
 					echo "Error en la verificacio de les constraints";
 					exit();
@@ -25,8 +22,7 @@
 			}
 			return $aux;
 		}	
-
-		//funcio que verifica una sola constraint comparant la consatint del url amb els camps de la taula
+		//verifica una sola constraint
 		function verifySingleConstr($singleConstr){
 			$aux = explode('=', $singleConstr);
 			$aux2 = explode('[', $aux[0]);
@@ -38,8 +34,7 @@
 			} 
 			return True;
 		}
-
-		//funcio encarregada de crear la query parsejant correcatment les constraints
+		//creador de constraints preparades per sentencia sql
 		function constrCreator($constr, $table){
 			if($constr != NULL){
 				$constrStr = "";
@@ -72,19 +67,16 @@
                             }
 							$aux[1] = $aux[1]."'";
 							$constrStr = $constrStr. $aux2[0]. $aux[1];
-
 							if($i < $len-1)
 								$constrStr = $constrStr. " AND ";
 							else
 								$constrStr = $constrStr;
 					}
 				}
-
 				if($limit != NULL)
 					$limitStr = " limit ". $limit;
 				else 
 					$limitStr = "";
-
 				if($constrSinLimit != NULL)
 					$constrStr = "select * from ". $table. " where ". $constrStr. $limitStr;
 				else 
@@ -96,7 +88,7 @@
 			return $constrStr;
 		}
 
-		//funcio que busca si hi ha limit entre les constraints i si hi ha l'extreu i es guarda el valor
+		//buscar si hi ha limit entre les constraints i si hi ha l'extreu i es guarda el valor
 		function limitDetector($constr){
 			$limitConstrStr[0]= "";
 			$len = count($constr);

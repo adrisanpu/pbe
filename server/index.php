@@ -1,19 +1,17 @@
 <?php
 
+	//dades de la db
+	$dbHost = "localHost";
+	$dbName = "pbe";
+	$dbUsr = "root";
+	$dbPassword = "";
+	//connexio amb la db utilitzant el fitxer connectDB.php
 	require_once("connectDB.php");
 	require_once("functions.php");
-
-	//connexio amb la base de dades
-	$dbHost = "localhost";
-	$dbName="pbe";
-	$dbUsr="root";
-	$dbPassword="";
 	$db = new dbConnection($dbHost, $dbName, $dbUsr, $dbPassword, "utf8");
 	$connection = $db->connect();
 	$funct = new RegularFunctions;
-
-	//agafem el url i separem les dades que ens interessen (taula i vector de constraints)
-	//verifiquem que les dades son correctes amb funcions del fitxer constVeryfier.php
+	//parsejat inicial del url i verificacio de les constaints introduides
 	$url= $_SERVER["REQUEST_URI"];
 	$aux = explode('?', $url);
 	$lenQuery = count($aux);
@@ -29,29 +27,26 @@
 		exit();
 	}
 	$constrUid = $funct->searchUid($constr);
-
-	//segons la taula que volguem mirar creem una query diferent a la bd i mostrem el seu resultat al servidor
+	//cas on es declara l'ordre en el que s'hauran de mostrar les dades per a cada taula i les imprimeix al servidor
 	switch($table){
 		case "timetables":
 			$iMax = 4;
-			$funct->orderAndPrintTimetable($connection, $iMax, $constr, $table, $contsVeryfier, $constrUid);				
+			$funct->orderAndPrintTimetable($connection, $iMax, $constr, $table, $contsVeryfier, $constrUid);
 			break;
 		case "tasks":
 			$iMax = 3;
 			$constrStr = $contsVeryfier->constrCreator($constr, $table);
 			$constrStr = $constrStr. " order by date";
-			$funct->showIt($connection, $constrStr, $iMax, $table, $constrUid);
+			$funct->showIt($connection, $constrStr, $iMax, $table,$constrUid);
 			break;
 		case "marks":
 			$iMax = 3;
 			$constrStr = $contsVeryfier->constrCreator($constr, $table);
 			$constrStr = $constrStr. " order by subject";
-			$funct->showIt($connection, $constrStr, $iMax, $table, $constrUid);
+			$funct->showIt($connection, $constrStr, $iMax, $table,$constrUid);
 			break;		
 	}
-
 	//tanquem la conexio amb la db
-	$db->disconnect();
+	mysqli_close($connection);
 
-	//posteriorment python llegeix els valors que apareixen al servidor web
 ?>
