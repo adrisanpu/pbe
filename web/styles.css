@@ -1,0 +1,71 @@
+/*Part de la pantalla de registe*/
+body{
+	height: 800px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container_login{
+	width: 40%;
+	display: block;
+	justify-content: center;
+	background: blue;
+	border: 2px solid black;
+	border-radius: 10px;
+}
+
+.container_login p{
+	color: white;
+	font: bold 20px sans-serif;
+	text-align: center;
+}
+
+li{
+	list-style: none;
+	margin-top: 10px;
+}
+li label{
+	color: white;
+	font: lighter 15px sans-serif;
+	width: 30%;
+}
+li input{
+	width: 70%;
+}
+.button_container{
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+button{
+	margin: 20px auto;
+}
+/*Part de la pantalla de usuari*/
+.container_user{
+	width: 40%;
+	display: block;
+	justify-content: center;
+	background: yellow;
+	border: 2px solid black;
+	border-radius: 10px;
+}
+.container_user .header{
+	display: flex;
+	padding: 10px 20px;
+}
+.header p{
+	font: lighter 15px sans-serif;
+}
+.user_name{
+	display: flex;
+	color: blue;
+	font: lighter 15px sans-serif;
+
+}
+.button_logout{
+	left:0;
+}
+
