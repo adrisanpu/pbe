@@ -5,6 +5,8 @@ var screen_login = document.getElementById("container_login");
 var screen_user = document.getElementById("container_user");
 var name_label = document.getElementById("user_name");
 var table_label = document.getElementById("table_name");
+var firstRow = document.querySelector('#firstRow');
+var otherRows = document.querySelector('#otherRows');
 var uid = "";
 
 
@@ -53,12 +55,10 @@ button_search.onclick = function(){
 			let valores = Object.values(data);
 			table_label.innerHTML= claves[1];
 			claves = Object.keys(Object.values(valores[1])[0]);
-			let firstRow = document.querySelector('#firstRow');
 			firstRow.innerHTML="";
 			firstRow.innerHTML +=`
 				${crearRegistro(claves)}
 			`;
-			let otherRows = document.querySelector('#otherRows');
 			valores = valores[1];
 			otherRows.innerHTML="";
 			otherRows.innerHTML+=`
@@ -96,6 +96,10 @@ function crearTabla(val){
 button_logout.onclick = function(){
 	screen_login.style.display = "flex";
 	screen_user.style.display = "none";
+	firstRow.innerHTML="";
+	otherRows.innerHTML="";
+	table_label.innerHTML= "";
+	name_label.innerHTML="";
 }
 
 
