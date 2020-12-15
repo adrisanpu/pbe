@@ -8,7 +8,7 @@ body{
 
 .container_login{
 	width: 40%;
-	display: block;
+	display: flex;
 	justify-content: center;
 	background: blue;
 	border: 2px solid black;
@@ -20,7 +20,6 @@ body{
 	font: bold 20px sans-serif;
 	text-align: center;
 }
-
 li{
 	list-style: none;
 	margin-top: 10px;
@@ -46,26 +45,66 @@ button{
 /*Part de la pantalla de usuari*/
 .container_user{
 	width: 40%;
-	display: block;
-	justify-content: center;
+	display: none;
 	background: yellow;
 	border: 2px solid black;
 	border-radius: 10px;
 }
-.container_user .header{
+.header, .container_query {
 	display: flex;
+	justify-content: center;
 	padding: 10px 20px;
 }
 .header p{
-	font: lighter 15px sans-serif;
+	font: lighter 15px sans-serif; 
 }
 .user_name{
 	display: flex;
 	color: blue;
 	font: lighter 15px sans-serif;
-
 }
-.button_logout{
-	left:0;
+
+.container_query form{
+	width: 70%;
+}
+.container_query input{
+	width: 100%;
+}
+.button_send{
+	align-self: right;
+	margin: 0px 20px;
+}
+.table_container{
+	display: block;
+	text-align: center;
+	padding: 10px 20px;
+}
+.table_container p{
+	font: lighter 15px sans-serif; 
+	color: red;
+	margin-bottom: 10px;
+}
+.firstRow{
+	width: 100%;
+	background: blue;
+}
+.otherRows{
+	width: 100%;
+	background: white;
+}
+tbody{
+	width: inherit∫;
+}
+.val{
+	text-align: center;
+}
+.reg{
+	display: table-row;
+}
+.fields{
+	background: grey;
+}
+.reg{
+	background: white;
 }
 

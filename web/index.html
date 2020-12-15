@@ -5,44 +5,45 @@
 	<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-		<div class="container_login">
+	<div class="container_login" id="container_login">
 		<p>Welcome to course manager</p>
 		<section class="formulari">
 			<form action="/my-handling-form-page" method="post"> 
 			<ul>
 			  <li>
 			    <label for="username">Username:</label>
-			    <input type="text" id="name" name="user_name" />
+			   	<input type="text" id="name"></input>
 			  </li>
 			  <li>
 			    <label for="password">Password:</label>
-			    <input type="password" id="password" name="user_password" />
+			    <input type="password" id="password"></input>
 			  </li>
 			</ul>
 			</form>
 		</section>
 		<div class="button_container">
-			<button class="button_login">Login</button>
+			<button class="button_login" id="button_login">Login</button>
 		</div>
 	</div>
 
-	<div class="container_user">
+	<div class="container_user" id="container_user">
 		<div class="header">
 			<p>Welcome:</p>
-			<p class="user_name">username</p>
-			<button class="button_logout">Logout</button>
+			<p class="user_name" id="user_name">username</p>
+			<button class="button_logout" id="button_logout">Logout</button>
 		</div>
-
-		<section class="formulari">
+		<div class="container_query">
 			<form action="/my-handling-form-page" method="post"> 
-				<input type="text" id="name" name="user_name" />
-				<button class="button_send">Send</button>
+				<input type="text" id="constraints" name="constraints" />
 			</form>
-		</section>
-
+			<button class="button_send" id="button_send">Send</button>
+		</div>
 		<div class="table_container">
-			
+			<p id="table_name"></p>
+			<table class="firstRow" id="firstRow"></table>
+			<table class="otherRows" id="otherRows"></table>
 		</div>
 	</div>
+	<script src="main_cm.js"></script>
 </body>
 </html>
