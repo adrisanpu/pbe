@@ -1,2 +1,10 @@
 # pbe
-REPOSITORI PROJECTE BÀSIC D'ENGINYERIA DE ADRIÀ SÁNCHEZ PUIG
+REPOSITORI ASSIGNTURA PROJECTE BÀSIC D'ENGINYERIA
+
+AUTORS:
+
+-Joan Plana Sala
+-Adrià Sánchez Puig
+-Alejandro Silva
+-Adulfo
+-Xavier Canals Reynes
